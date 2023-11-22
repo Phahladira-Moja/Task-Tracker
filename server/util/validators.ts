@@ -1,6 +1,10 @@
 import Joi from "joi";
 import { ResponseModel } from "../models/ResponseModel";
 
+const userIdSchema = Joi.object().keys({
+  id: Joi.string().min(4).required(),
+});
+
 const authSchema = Joi.object().keys({
   username: Joi.string()
     .regex(/^[a-zA-Z0-9](?!.*[._]{2})[a-zA-Z0-9._]+[a-zA-Z0-9]$/)
@@ -36,6 +40,16 @@ export function validateTask(
     title: title,
     description: description,
     priority: priority,
+  });
+
+  if (result.error) return false;
+
+  return true;
+}
+
+export function validateUserId(userId: any): boolean {
+  const result = taskSchema.validate({
+    id: userId,
   });
 
   if (result.error) return false;

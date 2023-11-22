@@ -67,8 +67,10 @@ export default class AuthRepository implements IAuthRepository {
       });
 
       if (!userExists) {
+        const hashPassword = await bcrypt.hash(password, 12);
+
         const newUser = await prisma.user.create({
-          data: { username: username, password: password },
+          data: { username: username, password: hashPassword },
         });
 
         let user: User = {
