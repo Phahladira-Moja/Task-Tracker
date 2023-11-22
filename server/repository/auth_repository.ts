@@ -4,37 +4,32 @@ import IAuthRepository from "./auth_repository_interface";
 import { ResponseModel } from "../models/ResponseModel";
 import { STATUS_CODE_ENUM } from "../constants";
 import * as bcrypt from "bcryptjs";
+import createResponseModel from "../util/create_response_model";
 export default class AuthRepository implements IAuthRepository {
   constructor() {}
 
-  async login(
-    username: string,
-    password: string
-  ): Promise<User | ResponseModel> {
+  async login(username: string, password: string): Promise<ResponseModel> {
     try {
       const userExists = await prisma.user.findUnique({
         where: { username: username },
       });
 
       if (!userExists) {
-        const errorModel: ResponseModel = {
-          code: STATUS_CODE_ENUM.NOT_FOUND,
-          message: "User doesn't exists",
-        };
-
-        return errorModel;
+        return createResponseModel(
+          STATUS_CODE_ENUM.NOT_FOUND,
+          "The requested user does not exist.",
+          "User Not Found"
+        );
       }
 
-      //! TODO: ADD BCRYPT SERVICE
       const isCorrect = await bcrypt.compare(password, userExists.password);
 
       if (!isCorrect) {
-        const errorModel: ResponseModel = {
-          code: STATUS_CODE_ENUM.UNAUTHORIZED,
-          message: "Incorrect username or password",
-        };
-
-        return errorModel;
+        return createResponseModel(
+          STATUS_CODE_ENUM.UNAUTHORIZED,
+          "Incorrect username or password.",
+          "Unauthorized"
+        );
       }
 
       let user: User = {
@@ -42,25 +37,25 @@ export default class AuthRepository implements IAuthRepository {
         username: userExists.username,
       };
 
-      return user;
+      return createResponseModel(
+        STATUS_CODE_ENUM.OK_STATUS,
+        "Successful login.",
+        "",
+        user
+      );
     } catch (error) {
       //! TODO: ADD LOGGER
       console.log(error);
 
-      const errorModel: ResponseModel = {
-        code: STATUS_CODE_ENUM.INTERNAL_SERVER,
-        message:
-          "An unexpected error occurred while trying to login. Please try again.",
-      };
-
-      return errorModel;
+      return createResponseModel(
+        STATUS_CODE_ENUM.INTERNAL_SERVER,
+        "An unexpected error occurred while trying to login. Please try again.",
+        "Internal Server Error"
+      );
     }
   }
 
-  async signup(
-    username: string,
-    password: string
-  ): Promise<User | ResponseModel> {
+  async signup(username: string, password: string): Promise<ResponseModel> {
     try {
       const userExists = await prisma.user.findUnique({
         where: { username: username },
@@ -78,7 +73,12 @@ export default class AuthRepository implements IAuthRepository {
           username: newUser.username,
         };
 
-        return user;
+        return createResponseModel(
+          STATUS_CODE_ENUM.OK_STATUS,
+          "Successful registration.",
+          "",
+          user
+        );
       }
 
       const errorModel: ResponseModel = {
@@ -86,18 +86,20 @@ export default class AuthRepository implements IAuthRepository {
         message: "User already exists",
       };
 
-      return errorModel;
+      return createResponseModel(
+        STATUS_CODE_ENUM.RESOURCE_EXISTS,
+        "User already exists",
+        "Conflict"
+      );
     } catch (error) {
       //! TODO: ADD LOGGER
       console.log(error);
 
-      const errorModel: ResponseModel = {
-        code: STATUS_CODE_ENUM.INTERNAL_SERVER,
-        message:
-          "An unexpected error occurred while trying to sign-up. Please try again.",
-      };
-
-      return errorModel;
+      return createResponseModel(
+        STATUS_CODE_ENUM.INTERNAL_SERVER,
+        "An unexpected error occurred while trying to sign up. Please try again.",
+        "Internal Server Error"
+      );
     }
   }
 }
