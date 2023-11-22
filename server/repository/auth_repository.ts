@@ -1,22 +1,37 @@
 import { User } from "../models/User";
 import { prisma } from "../config/prisma_config";
 import IAuthRepository from "./auth_repository_interface";
-import { ErrorModel } from "../models/ErrorModel";
+import { ResponseModel } from "../models/ResponseModel";
 import { STATUS_CODE_ENUM } from "../constants";
-
+import * as bcrypt from "bcryptjs";
 export default class AuthRepository implements IAuthRepository {
   constructor() {}
 
-  async login(username: string, password: string): Promise<User | ErrorModel> {
+  async login(
+    username: string,
+    password: string
+  ): Promise<User | ResponseModel> {
     try {
       const userExists = await prisma.user.findUnique({
         where: { username: username },
       });
 
       if (!userExists) {
-        const errorModel: ErrorModel = {
+        const errorModel: ResponseModel = {
           code: STATUS_CODE_ENUM.NOT_FOUND,
           message: "User doesn't exists",
+        };
+
+        return errorModel;
+      }
+
+      //! TODO: ADD BCRYPT SERVICE
+      const isCorrect = await bcrypt.compare(password, userExists.password);
+
+      if (!isCorrect) {
+        const errorModel: ResponseModel = {
+          code: STATUS_CODE_ENUM.UNAUTHORIZED,
+          message: "Incorrect username or password",
         };
 
         return errorModel;
@@ -32,7 +47,7 @@ export default class AuthRepository implements IAuthRepository {
       //! TODO: ADD LOGGER
       console.log(error);
 
-      const errorModel: ErrorModel = {
+      const errorModel: ResponseModel = {
         code: STATUS_CODE_ENUM.INTERNAL_SERVER,
         message:
           "An unexpected error occurred while trying to login. Please try again.",
@@ -42,7 +57,10 @@ export default class AuthRepository implements IAuthRepository {
     }
   }
 
-  async signup(username: string, password: string): Promise<User | ErrorModel> {
+  async signup(
+    username: string,
+    password: string
+  ): Promise<User | ResponseModel> {
     try {
       const userExists = await prisma.user.findUnique({
         where: { username: username },
@@ -61,7 +79,7 @@ export default class AuthRepository implements IAuthRepository {
         return user;
       }
 
-      const errorModel: ErrorModel = {
+      const errorModel: ResponseModel = {
         code: STATUS_CODE_ENUM.RESOURCE_EXISTS,
         message: "User already exists",
       };
@@ -71,7 +89,7 @@ export default class AuthRepository implements IAuthRepository {
       //! TODO: ADD LOGGER
       console.log(error);
 
-      const errorModel: ErrorModel = {
+      const errorModel: ResponseModel = {
         code: STATUS_CODE_ENUM.INTERNAL_SERVER,
         message:
           "An unexpected error occurred while trying to sign-up. Please try again.",

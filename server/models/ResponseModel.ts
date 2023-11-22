@@ -1,4 +1,4 @@
-export type ErrorModel = {
+export type ResponseModel = {
   code: number;
   message: string;
 };
