@@ -24,7 +24,14 @@ model Task {
   description String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  priority TaskPriority @default(LOW)
 
   userId String @db.ObjectId
   user User @relation("User", fields: [userId], references: [id])
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
 }
