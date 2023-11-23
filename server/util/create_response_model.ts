@@ -6,13 +6,15 @@ export default function createResponseModel(
   statusCode: number,
   message: string,
   error: string,
-  body?: User | SafeTask | SafeTask[]
+  body?: User | SafeTask | SafeTask[],
+  token?: string
 ): ResponseModel {
   const errorModel: ResponseModel = {
     code: statusCode,
     message: message,
     error,
     body,
+    token,
   };
 
   return errorModel;

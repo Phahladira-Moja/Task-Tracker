@@ -6,4 +6,5 @@ export type ResponseModel = {
   error?: string;
   message: string;
   body?: User | SafeTask | SafeTask[];
+  token?: string;
 };

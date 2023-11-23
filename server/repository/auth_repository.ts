@@ -5,6 +5,8 @@ import { ResponseModel } from "../models/ResponseModel";
 import { STATUS_CODE_ENUM } from "../constants";
 import * as bcrypt from "bcryptjs";
 import createResponseModel from "../util/create_response_model";
+import { sign } from "jsonwebtoken";
+
 export default class AuthRepository implements IAuthRepository {
   constructor() {}
 
@@ -37,11 +39,17 @@ export default class AuthRepository implements IAuthRepository {
         username: userExists.username,
       };
 
+      const jwt_key = process.env.JWT_KEY;
+      const jsonToken = sign({ user: user }, `${jwt_key}`, {
+        expiresIn: "1m",
+      });
+
       return createResponseModel(
         STATUS_CODE_ENUM.OK_STATUS,
         "Successful login.",
         "",
-        user
+        user,
+        jsonToken
       );
     } catch (error) {
       //! TODO: ADD LOGGER
@@ -73,11 +81,17 @@ export default class AuthRepository implements IAuthRepository {
           username: newUser.username,
         };
 
+        const jwt_key = process.env.JWT_KEY;
+        const jsonToken = sign({ user: user }, `${jwt_key}`, {
+          expiresIn: "1m",
+        });
+
         return createResponseModel(
           STATUS_CODE_ENUM.OK_STATUS,
           "Successful registration.",
           "",
-          user
+          user,
+          jsonToken
         );
       }
 
