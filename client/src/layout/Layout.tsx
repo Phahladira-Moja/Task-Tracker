@@ -1,4 +1,4 @@
-import React from "react";
+import Header from "../components/Header";
 
 const Layout = () => {
   return (
@@ -8,7 +8,7 @@ const Layout = () => {
       </div>
 
       <main className="app">
-        <p>Hello</p>
+        <Header />
       </main>
     </>
   );
