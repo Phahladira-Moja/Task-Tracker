@@ -2,10 +2,11 @@ import { prisma } from "../config/prisma_config";
 import { STATUS_CODE_ENUM } from "../constants";
 import { ResponseModel } from "../models/ResponseModel";
 import { CreateTask, SafeTask } from "../models/Task";
+import createResponseModel from "../util/create_response_model";
 import ITaskRepository from "./task_repository_interface";
 
 export default class TaskRepository implements ITaskRepository {
-  async getTasks(id: string): Promise<SafeTask[] | ResponseModel> {
+  async getTasks(id: string): Promise<ResponseModel> {
     try {
       const tasks = await prisma.task.findMany({
         where: {
@@ -22,18 +23,21 @@ export default class TaskRepository implements ITaskRepository {
         updatedAt: task.updatedAt.toISOString(),
       }));
 
-      return safeTasks;
+      return createResponseModel(
+        STATUS_CODE_ENUM.OK_STATUS,
+        "Successfully retrieved the list of tasks.",
+        "",
+        safeTasks
+      );
     } catch (error) {
       //! TODO: ADD LOGGER
       console.log(error);
 
-      const errorModel: ResponseModel = {
-        code: STATUS_CODE_ENUM.INTERNAL_SERVER,
-        message:
-          "An unexpected error occurred while trying to get Tasks. Please try again.",
-      };
-
-      return errorModel;
+      return createResponseModel(
+        STATUS_CODE_ENUM.INTERNAL_SERVER,
+        "An unexpected error occurred while trying to login. Please try again.",
+        "Internal Server Error"
+      );
     }
   }
 
@@ -52,23 +56,20 @@ export default class TaskRepository implements ITaskRepository {
         },
       });
 
-      const successModel: ResponseModel = {
-        code: STATUS_CODE_ENUM.OK_STATUS,
-        message: "Task created successfully.",
-      };
-
-      return successModel;
+      return createResponseModel(
+        STATUS_CODE_ENUM.OK_STATUS,
+        "Task created successfully.",
+        ""
+      );
     } catch (error) {
       //! TODO: ADD LOGGER
       console.log(error);
 
-      const errorModel: ResponseModel = {
-        code: STATUS_CODE_ENUM.INTERNAL_SERVER,
-        message:
-          "An unexpected error occurred while trying to create a task. Please try again.",
-      };
-
-      return errorModel;
+      return createResponseModel(
+        STATUS_CODE_ENUM.INTERNAL_SERVER,
+        "An unexpected error occurred while trying to login. Please try again.",
+        "Internal Server Error"
+      );
     }
   }
 
@@ -85,23 +86,20 @@ export default class TaskRepository implements ITaskRepository {
         },
       });
 
-      const successModel: ResponseModel = {
-        code: STATUS_CODE_ENUM.OK_STATUS,
-        message: "Task updated successfully.",
-      };
-
-      return successModel;
+      return createResponseModel(
+        STATUS_CODE_ENUM.OK_STATUS,
+        "Task updated successfully.",
+        ""
+      );
     } catch (error) {
       //! TODO: ADD LOGGER
       console.log(error);
 
-      const errorModel: ResponseModel = {
-        code: STATUS_CODE_ENUM.INTERNAL_SERVER,
-        message:
-          "An unexpected error occurred while trying to update a task. Please try again.",
-      };
-
-      return errorModel;
+      return createResponseModel(
+        STATUS_CODE_ENUM.INTERNAL_SERVER,
+        "An unexpected error occurred while trying to login. Please try again.",
+        "Internal Server Error"
+      );
     }
   }
 
@@ -113,23 +111,20 @@ export default class TaskRepository implements ITaskRepository {
         },
       });
 
-      const successModel: ResponseModel = {
-        code: STATUS_CODE_ENUM.OK_STATUS,
-        message: "Task deleted successfully.",
-      };
-
-      return successModel;
+      return createResponseModel(
+        STATUS_CODE_ENUM.OK_STATUS,
+        "Task deleted successfully.",
+        ""
+      );
     } catch (error) {
       //! TODO: ADD LOGGER
       console.log(error);
 
-      const errorModel: ResponseModel = {
-        code: STATUS_CODE_ENUM.INTERNAL_SERVER,
-        message:
-          "An unexpected error occurred while trying to delete a task. Please try again.",
-      };
-
-      return errorModel;
+      return createResponseModel(
+        STATUS_CODE_ENUM.INTERNAL_SERVER,
+        "An unexpected error occurred while trying to login. Please try again.",
+        "Internal Server Error"
+      );
     }
   }
 }

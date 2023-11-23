@@ -48,7 +48,7 @@ export function validateTask(
 }
 
 export function validateUserId(userId: any): boolean {
-  const result = taskSchema.validate({
+  const result = userIdSchema.validate({
     id: userId,
   });
 

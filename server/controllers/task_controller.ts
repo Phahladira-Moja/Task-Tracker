@@ -9,9 +9,21 @@ export function makeCreateTask({ createTaskUseCase }: any) {
       "Content-Type": "application/json",
     };
 
-    const result = await createTaskUseCase();
+    const { userId, title, description, priority } = req.body;
 
-    return result;
+    const result = await createTaskUseCase(
+      userId,
+      title,
+      description,
+      priority
+    );
+
+    return res
+      .status(result.code)
+      .header(headers)
+      .json({
+        ...result,
+      });
   };
 }
 
@@ -24,9 +36,22 @@ export function makeUpdateTask({ updateTaskUseCase }: any) {
       "Content-Type": "application/json",
     };
 
-    const result = await updateTaskUseCase();
+    const taskId = req.params.id;
+    const { title, description, priority } = req.body;
 
-    return result;
+    const result = await updateTaskUseCase(
+      taskId,
+      title,
+      description,
+      priority
+    );
+
+    return res
+      .status(result.code)
+      .header(headers)
+      .json({
+        ...result,
+      });
   };
 }
 
@@ -36,9 +61,15 @@ export function makeGetTask({ getTaskUseCase }: any) {
       "Content-Type": "application/json",
     };
 
-    const result = await getTaskUseCase();
+    const userId = req.params.id;
+    const result = await getTaskUseCase(userId);
 
-    return result;
+    return res
+      .status(result.code)
+      .header(headers)
+      .json({
+        ...result,
+      });
   };
 }
 
@@ -51,8 +82,14 @@ export function makeDeleteTask({ deleteTaskUseCase }: any) {
       "Content-Type": "application/json",
     };
 
-    const result = await deleteTaskUseCase();
+    const taskId = req.params.id;
+    const result = await deleteTaskUseCase(taskId);
 
-    return result;
+    return res
+      .status(result.code)
+      .header(headers)
+      .json({
+        ...result,
+      });
   };
 }

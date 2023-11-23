@@ -6,7 +6,7 @@ export default function createResponseModel(
   statusCode: number,
   message: string,
   error: string,
-  body?: User | SafeTask
+  body?: User | SafeTask | SafeTask[]
 ): ResponseModel {
   const errorModel: ResponseModel = {
     code: statusCode,

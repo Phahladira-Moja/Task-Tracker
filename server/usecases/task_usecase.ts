@@ -1,5 +1,7 @@
+import { STATUS_CODE_ENUM } from "../constants";
 import { CreateTask } from "../models/Task";
 import ITaskRepository from "../repository/task_repository_interface";
+import createResponseModel from "../util/create_response_model";
 
 export function makeCreateTaskUseCase(
   taskRepo: ITaskRepository,
@@ -16,11 +18,21 @@ export function makeCreateTaskUseCase(
     const isValid = validateTask(title, description, priority);
 
     if (!isValidId) {
-      //! TODO: RETURN RESPONSE MODEL
+      //! TODO: LOG
+      return createResponseModel(
+        STATUS_CODE_ENUM.BAD_REQUEST,
+        "The user ID passed in is invalid.",
+        "Validation Error"
+      );
     }
 
     if (!isValid) {
-      //! TODO: RETURN RESPONSE MODEL
+      //! TODO: LOG
+      return createResponseModel(
+        STATUS_CODE_ENUM.BAD_REQUEST,
+        "The parameters passed are invalid. Either the title, description or priority level.",
+        "Validation Error"
+      );
     }
 
     const task: CreateTask = {
@@ -29,7 +41,7 @@ export function makeCreateTaskUseCase(
       priority: priority,
     };
 
-    return await taskRepo.createTask(userId, priority);
+    return await taskRepo.createTask(userId, task);
   };
 }
 
@@ -39,20 +51,30 @@ export function makeUpdateTaskUseCase(
   validateTask: (title: any, description: any, priority: any) => boolean
 ) {
   return async function makeUpdateTask(
-    userId: string,
+    taskId: string,
     title: any,
     description: any,
     priority: any
   ) {
-    const isValidId = validateUserId(userId);
+    const isValidId = validateUserId(taskId);
     const isValid = validateTask(title, description, priority);
 
     if (!isValidId) {
-      //! TODO: RETURN RESPONSE MODEL
+      //! TODO: LOG
+      return createResponseModel(
+        STATUS_CODE_ENUM.BAD_REQUEST,
+        "The user ID passed in is invalid.",
+        "Validation Error"
+      );
     }
 
     if (!isValid) {
-      //! TODO: RETURN RESPONSE MODEL
+      //! TODO: LOG
+      return createResponseModel(
+        STATUS_CODE_ENUM.BAD_REQUEST,
+        "The parameters passed are invalid. Either the title, description or priority level.",
+        "Validation Error"
+      );
     }
 
     const task: CreateTask = {
@@ -61,7 +83,7 @@ export function makeUpdateTaskUseCase(
       priority: priority,
     };
 
-    return await taskRepo.updateTask(userId, priority);
+    return await taskRepo.updateTask(taskId, task);
   };
 }
 
@@ -73,7 +95,12 @@ export function makeGetTasksUseCase(
     const isValidId = validateUserId(userId);
 
     if (!isValidId) {
-      //! TODO: RETURN RESPONSE MODEL
+      //! TODO: LOG
+      return createResponseModel(
+        STATUS_CODE_ENUM.BAD_REQUEST,
+        "The user ID passed in is invalid.",
+        "Validation Error"
+      );
     }
 
     return await taskRepo.getTasks(userId as string);
@@ -88,7 +115,12 @@ export function makeDeleteTasksUseCase(
     const isValidId = validateUserId(id);
 
     if (!isValidId) {
-      //! TODO: RETURN RESPONSE MODEL
+      //! TODO: LOG
+      return createResponseModel(
+        STATUS_CODE_ENUM.BAD_REQUEST,
+        "The task ID passed in is invalid.",
+        "Validation Error"
+      );
     }
 
     return await taskRepo.deleteTask(id as string);
