@@ -7,7 +7,7 @@ const userIdSchema = Joi.object().keys({
 
 const authSchema = Joi.object().keys({
   username: Joi.string()
-    .regex(/^[a-zA-Z0-9](?!.*[._]{2})[a-zA-Z0-9._]+[a-zA-Z0-9]$/)
+    .regex(/^@[a-zA-Z0-9](?!.*[._]{2})[a-zA-Z0-9._]+[a-zA-Z0-9]$/)
     .min(3)
     .max(30)
     .required(),

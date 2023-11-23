@@ -31,7 +31,7 @@ export function makeSignUpUseCase(
   authRepo: IAuthRepository,
   validateAuth: (username: any, password: any) => boolean
 ) {
-  return async function makeLogin(
+  return async function makeSignUp(
     username: any,
     password: any
   ): Promise<ResponseModel> {

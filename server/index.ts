@@ -23,8 +23,8 @@ app.use(helmet());
 app.use(morgan("combined"));
 
 const limiter = rateLimit({
-  windowMs: 5 * 60 * 1000,
-  limit: 20,
+  windowMs: 60 * 60 * 1000,
+  limit: 100,
   legacyHeaders: false,
   message: "You have exceeded your 20 requests per 5 minute limit.",
 });
