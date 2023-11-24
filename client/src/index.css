@@ -84,6 +84,11 @@
   @apply max-sm:hidden font-satoshi font-semibold text-lg text-black tracking-wide;
 }
 
+/* Feed Component */
+.feed {
+  @apply mt-8 mx-auto w-full max-w-lg flex justify-center items-center flex-col gap-2;
+}
+
 .flex-center {
   @apply flex justify-center items-center;
 }
@@ -102,4 +107,28 @@
 
 .dropdown {
   @apply absolute right-0 top-full w-full mt-3 mr-2 rounded-lg flex flex-col gap-2 justify-end items-end;
+}
+
+.desc {
+  @apply mt-3 text-sm text-gray-600 sm:text-lg max-w-xl;
+}
+
+.head_text {
+  @apply text-3xl font-extrabold leading-[1.15] text-black sm:text-4xl;
+}
+
+.orange_gradient {
+  @apply bg-gradient-to-r from-amber-500 via-orange-600 to-yellow-500 bg-clip-text text-transparent;
+}
+
+.search_input {
+  @apply block w-full rounded-md border border-gray-200 bg-white py-2.5 font-satoshi pl-5 pr-12 text-sm shadow-lg font-medium hover:border-black hover:outline-none hover:ring-0;
+}
+
+.task_layout {
+  @apply w-full rounded-md border border-gray-200 bg-white py-2.5 font-satoshi pl-5 text-sm shadow-lg font-medium hover:border-black hover:outline-none hover:ring-0;
+}
+
+.tasks_layout {
+  @apply flex flex-col w-full space-y-2 py-2;
 }
