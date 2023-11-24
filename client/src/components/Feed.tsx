@@ -1,55 +1,77 @@
 import { useState, useEffect } from "react";
 import TaskCardList from "./TaskCardList";
 import { ITask } from "@/lib/Models";
-import { Priority } from "@/constants/Enums";
+import { useUserContext } from "../providers/AuthContext";
+
+import axios from "axios";
 
 const Feed = () => {
-  const [searchText, setSearchText] = useState("");
-  //   const [tasks, setTasks] = useState([]);
+  const { token, loading, setIsAuthenticated } = useUserContext();
+  // const [searchText, setSearchText] = useState("");
+  const [tasks, setTasks] = useState<ITask[]>([]);
 
-  const tasks: ITask[] = [
-    {
-      id: "test",
-      title: "Task One",
-      description: "Description one",
-      priority: Priority.Low,
-    },
-  ];
+  // const debounce = (func: unknown, delay: number) => {
+  //   let timer: unknown;
+  //   return function (...args: unknown[]) {
+  //     clearTimeout(timer);
+  //     timer = setTimeout(() => func(...args), delay);
+  //   };
+  // };
 
-  const debounce = (func: unknown, delay: number) => {
-    let timer: unknown;
-    return function (...args: unknown[]) {
-      clearTimeout(timer);
-      timer = setTimeout(() => func(...args), delay);
+  // const handleSearch = async (value: string) => {
+  //   try {
+  //     console.log(value);
+  //     //   const response = await fetch("/api/prompt/search", {
+  //     //     method: "POST",
+  //     //     body: JSON.stringify({
+  //     //       searchText: value,
+  //     //     }),
+  //     //   });
+  //     //   const data = await response.json();
+  //     //   setPosts(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // const delayedSearch = debounce(handleSearch, 1500);
+
+  // const handleSearchChange = (e) => {
+  //   setSearchText(e.currentTarget.value);
+  //   delayedSearch(e.currentTarget.value);
+  // };
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        // setSearchText("");
+        const config = {
+          headers: { Authorization: `Bearer ${token}` },
+        };
+
+        const response = await axios.get(
+          "http://localhost:8000/api/v1/tasks",
+          config
+        );
+
+        console.log(response);
+
+        // setPosts(data)
+      } catch (error) {
+        console.log(error);
+      }
     };
-  };
 
-  const handleSearch = async (value: string) => {
-    try {
-      console.log(value);
-      //   const response = await fetch("/api/prompt/search", {
-      //     method: "POST",
-      //     body: JSON.stringify({
-      //       searchText: value,
-      //     }),
-      //   });
-      //   const data = await response.json();
-      //   setPosts(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    fetchPosts();
+  }, []);
 
-  const delayedSearch = debounce(handleSearch, 1500);
-
-  const handleSearchChange = (e) => {
-    setSearchText(e.currentTarget.value);
-    delayedSearch(e.currentTarget.value);
-  };
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <section className="feed">
-      <form className="relative w-full flex-center">
+      {/* <form className="relative w-full flex-center">
         <input
           type="text"
           placeholder="Search for tasks"
@@ -58,7 +80,7 @@ const Feed = () => {
           required
           className="search_input peer"
         />
-      </form>
+      </form> */}
 
       <TaskCardList tasks={tasks} />
     </section>

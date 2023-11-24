@@ -6,7 +6,4 @@ export type CreateTask = {
   priority: "LOW" | "MEDIUM" | "HIGH";
 };
 
-export type SafeTask = Omit<Task, "createdAt" | "updatedAt"> & {
-  createdAt: string;
-  updatedAt: string;
-};
+export type SafeTask = Omit<Task, "createdAt" | "updatedAt" | "userId">;

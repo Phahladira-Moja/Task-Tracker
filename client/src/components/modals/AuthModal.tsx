@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 interface AuthModalProps {
   isLogin: boolean;
@@ -62,13 +63,20 @@ export default function AuthModal({ isLogin }: AuthModalProps) {
         : await axios.post("http://localhost:8000/api/v1/users/signup", values);
       // isLogin ? await axios.post("/api/servers", values) : await axios.post("/api/servers", values);
 
-      console.log(response);
       setToken(response.data.token);
       localStorage.setItem("token", response.data.token);
-      // form.reset();
-      // window.location.reload();
+
+      if (response.status === 200 && isLogin)
+        toast.success(response.data.message);
+      else if (response.status === 200 && !isLogin)
+        toast.success(response.data.message);
+      else toast.error(response.data.message);
+
+      form.reset();
+      window.location.reload();
     } catch (error) {
       console.log(error);
+      toast.error("Unexpected error occurred. Try again later.");
     }
   }
 

@@ -1,3 +1,4 @@
+import { useUserContext } from "../providers/AuthContext";
 import { ITask } from "@/lib/Models";
 import TaskCard from "./TaskCard";
 
@@ -6,11 +7,13 @@ interface TaskCardListProps {
 }
 
 const TaskCardList = ({ tasks }: TaskCardListProps) => {
-  const isLoggedIn = true;
+  const { isAuthenticated } = useUserContext();
+
+  console.log(isAuthenticated);
 
   return (
     <div className="tasks_layout">
-      {!isLoggedIn ? (
+      {!isAuthenticated ? (
         <div className="flex-center">
           <img
             className="object-contain h-[215px] xl:h-[400px]"

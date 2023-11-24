@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useUserContext } from "../providers/AuthContext";
 
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,7 +15,7 @@ import TaskModal from "./modals/TaskModal";
 import ConfirmModal from "./modals/ConfirmModal";
 
 const Header = () => {
-  const isLoggedIn = false;
+  const { isAuthenticated } = useUserContext();
 
   return (
     <nav className="flex-between w-full mb-16 pt-3">
@@ -29,7 +30,7 @@ const Header = () => {
 
       <div className="sm:flex hidden">
         <div className="flex-center gap-3 md:gap-4 rounded">
-          {isLoggedIn && <TaskModal isCreating />}
+          {isAuthenticated && <TaskModal isCreating />}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -39,7 +40,7 @@ const Header = () => {
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="mr-16">
-              {isLoggedIn ? (
+              {isAuthenticated ? (
                 <ConfirmModal isLoggingOut />
               ) : (
                 <>
@@ -63,7 +64,7 @@ const Header = () => {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="mr-8 w-5">
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <>
                 <Button
                   variant="default"
