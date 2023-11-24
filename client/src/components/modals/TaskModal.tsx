@@ -36,6 +36,7 @@ import { Textarea } from "../ui/textarea";
 
 interface TaskModalProps {
   isCreating: boolean;
+  id?: string;
   title?: string;
   description?: string;
   priority?: Priority;
@@ -63,6 +64,7 @@ const formSchema = z.object({
 
 const TaskModal = ({
   isCreating,
+  id,
   title,
   description,
   priority,

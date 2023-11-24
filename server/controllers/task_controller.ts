@@ -61,7 +61,7 @@ export function makeGetTask({ getTaskUseCase }: any) {
       "Content-Type": "application/json",
     };
 
-    const userId = req.params.id;
+    const userId = req.body.user.id;
     const result = await getTaskUseCase(userId);
 
     return res

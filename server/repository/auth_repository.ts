@@ -41,7 +41,7 @@ export default class AuthRepository implements IAuthRepository {
 
       const jwt_key = process.env.JWT_KEY;
       const jsonToken = sign({ user: user }, `${jwt_key}`, {
-        expiresIn: "1m",
+        expiresIn: "5m",
       });
 
       return createResponseModel(
@@ -83,7 +83,7 @@ export default class AuthRepository implements IAuthRepository {
 
         const jwt_key = process.env.JWT_KEY;
         const jsonToken = sign({ user: user }, `${jwt_key}`, {
-          expiresIn: "1m",
+          expiresIn: "5m",
         });
 
         return createResponseModel(

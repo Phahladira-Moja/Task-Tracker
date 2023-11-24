@@ -1,6 +1,11 @@
+import { ITask } from "@/lib/Models";
 import TaskCard from "./TaskCard";
 
-const TaskCardList = ({ data }: { data: any }) => {
+interface TaskCardListProps {
+  tasks: ITask[];
+}
+
+const TaskCardList = ({ tasks }: TaskCardListProps) => {
   const isLoggedIn = true;
 
   return (
@@ -13,7 +18,7 @@ const TaskCardList = ({ data }: { data: any }) => {
             alt="logo"
           />
         </div>
-      ) : data.length === 0 ? (
+      ) : tasks.length === 0 ? (
         <div className="flex-center flex-col">
           <img
             className="object-contain h-[150px] xl:h-[400px]"
@@ -23,7 +28,7 @@ const TaskCardList = ({ data }: { data: any }) => {
           <p className="desc xl:text-4xl text-center">No Tasks Available</p>
         </div>
       ) : (
-        data.map((task: any) => <TaskCard key={task.id} task={task} />)
+        tasks.map((task: ITask) => <TaskCard key={task.id} task={task} />)
       )}
     </div>
   );

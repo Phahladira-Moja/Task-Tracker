@@ -1,9 +1,20 @@
 import { useState, useEffect } from "react";
 import TaskCardList from "./TaskCardList";
+import { ITask } from "@/lib/Models";
+import { Priority } from "@/constants/Enums";
 
 const Feed = () => {
   const [searchText, setSearchText] = useState("");
   //   const [tasks, setTasks] = useState([]);
+
+  const tasks: ITask[] = [
+    {
+      id: "test",
+      title: "Task One",
+      description: "Description one",
+      priority: Priority.Low,
+    },
+  ];
 
   const debounce = (func: unknown, delay: number) => {
     let timer: unknown;
@@ -41,7 +52,7 @@ const Feed = () => {
       <form className="relative w-full flex-center">
         <input
           type="text"
-          placeholder="Search for a task"
+          placeholder="Search for tasks"
           value={searchText}
           onChange={handleSearchChange}
           required
@@ -49,12 +60,7 @@ const Feed = () => {
         />
       </form>
 
-      <TaskCardList
-        data={[
-          { id: 1, title: "Task" },
-          { id: 2, title: "Task 2" },
-        ]}
-      />
+      <TaskCardList tasks={tasks} />
     </section>
   );
 };

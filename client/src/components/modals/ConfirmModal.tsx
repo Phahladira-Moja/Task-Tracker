@@ -12,10 +12,11 @@ import {
 import { Button } from "@/components/ui/button";
 
 interface ConfirmModalProps {
+  id?: string;
   isLoggingOut: boolean;
 }
 
-const ConfirmModal = ({ isLoggingOut }: ConfirmModalProps) => {
+const ConfirmModal = ({ isLoggingOut, id }: ConfirmModalProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>

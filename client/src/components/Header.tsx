@@ -14,7 +14,7 @@ import TaskModal from "./modals/TaskModal";
 import ConfirmModal from "./modals/ConfirmModal";
 
 const Header = () => {
-  const isLoggedIn = true;
+  const isLoggedIn = false;
 
   return (
     <nav className="flex-between w-full mb-16 pt-3">

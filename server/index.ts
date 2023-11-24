@@ -16,6 +16,17 @@ const app: Application = express();
 // parse application/json
 app.use(bodyParser.json());
 
+// Add middleware to enable CORS
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*"); // Update with the allowed origin
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
 // Use Helmet!
 app.use(helmet());
 

@@ -1,6 +1,8 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { useUserContext } from "../../providers/AuthContext";
 
 import {
   Form,
@@ -41,6 +43,8 @@ const formSchema = z.object({
 });
 
 export default function AuthModal({ isLogin }: AuthModalProps) {
+  const { setToken } = useUserContext();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,13 +55,18 @@ export default function AuthModal({ isLogin }: AuthModalProps) {
 
   const isLoading = form.formState.isSubmitting;
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      console.log(values);
+      const response = isLogin
+        ? await axios.post("http://localhost:8000/api/v1/users/login", values)
+        : await axios.post("http://localhost:8000/api/v1/users/signup", values);
       // isLogin ? await axios.post("/api/servers", values) : await axios.post("/api/servers", values);
 
-      form.reset();
-      window.location.reload();
+      console.log(response);
+      setToken(response.data.token);
+      localStorage.setItem("token", response.data.token);
+      // form.reset();
+      // window.location.reload();
     } catch (error) {
       console.log(error);
     }
