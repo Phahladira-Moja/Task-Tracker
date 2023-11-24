@@ -1,4 +1,5 @@
-import { Button } from "./ui/button";
+import ConfirmModal from "./modals/ConfirmModal";
+import TaskModal from "./modals/TaskModal";
 
 const TaskCard = ({ task }: { task: any }) => {
   return (
@@ -11,12 +12,8 @@ const TaskCard = ({ task }: { task: any }) => {
       </div>
 
       <div className="flex gap-2 mr-4">
-        <Button variant="default" size="sm">
-          Edit
-        </Button>
-        <Button variant="destructive" size="sm">
-          Delete
-        </Button>
+        <TaskModal isCreating={false} />
+        <ConfirmModal isLoggingOut={false} />
       </div>
     </div>
   );

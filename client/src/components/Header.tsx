@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 import { Button } from "./ui/button";
@@ -10,10 +9,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import AuthModal from "./AuthModal";
+import AuthModal from "./modals/AuthModal";
+import TaskModal from "./modals/TaskModal";
+import ConfirmModal from "./modals/ConfirmModal";
 
 const Header = () => {
-  const isLoggedIn = false;
+  const isLoggedIn = true;
 
   return (
     <nav className="flex-between w-full mb-16 pt-3">
@@ -28,11 +29,7 @@ const Header = () => {
 
       <div className="sm:flex hidden">
         <div className="flex-center gap-3 md:gap-4 rounded">
-          {isLoggedIn && (
-            <Button variant="default" size="sm">
-              Create Task
-            </Button>
-          )}
+          {isLoggedIn && <TaskModal isCreating />}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -43,13 +40,7 @@ const Header = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="mr-16">
               {isLoggedIn ? (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn("btn", "w-full")}
-                >
-                  Logout
-                </Button>
+                <ConfirmModal isLoggingOut />
               ) : (
                 <>
                   <AuthModal isLogin />
@@ -81,31 +72,13 @@ const Header = () => {
                 >
                   Create Task
                 </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className={cn("btn", "w-full")}
-                >
-                  Logout
-                </Button>
+                <ConfirmModal isLoggingOut />
               </>
             ) : (
               <>
-                <Button
-                  variant="default"
-                  size="sm"
-                  className={cn("btn", "w-full mb-2")}
-                >
-                  Login
-                </Button>
+                <AuthModal isLogin />
                 <DropdownMenuSeparator />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={cn("btn", "w-full")}
-                >
-                  Sign up
-                </Button>
+                <AuthModal isLogin={false} />
               </>
             )}
           </DropdownMenuContent>

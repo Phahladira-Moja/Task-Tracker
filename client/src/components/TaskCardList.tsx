@@ -20,7 +20,7 @@ const TaskCardList = ({ data }: { data: any }) => {
             src="./src/assets/empty.svg"
             alt="logo"
           />
-          <p className="desc xl:text-2xl text-center">No Tasks Available</p>
+          <p className="desc xl:text-4xl text-center">No Tasks Available</p>
         </div>
       ) : (
         data.map((task: any) => <TaskCard key={task.id} task={task} />)

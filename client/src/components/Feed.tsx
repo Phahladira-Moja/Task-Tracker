@@ -50,12 +50,10 @@ const Feed = () => {
       </form>
 
       <TaskCardList
-        data={
-          [
-            // { id: 1, title: "Task" },
-            // { id: 2, title: "Task 2" },
-          ]
-        }
+        data={[
+          { id: 1, title: "Task" },
+          { id: 2, title: "Task 2" },
+        ]}
       />
     </section>
   );
