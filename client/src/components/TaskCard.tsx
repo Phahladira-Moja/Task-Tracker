@@ -20,7 +20,7 @@ const TaskCard = ({ task }: TaskCardProps) => {
 
       <div className="flex gap-2 mr-4">
         <TaskModal isCreating={false} {...task} />
-        <ConfirmModal isLoggingOut={false} />
+        <ConfirmModal isLoggingOut={false} id={task.id} />
       </div>
     </div>
   );

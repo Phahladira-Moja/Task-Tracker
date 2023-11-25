@@ -6,6 +6,7 @@ import { STATUS_CODE_ENUM } from "../constants";
 import * as bcrypt from "bcryptjs";
 import createResponseModel from "../util/create_response_model";
 import { sign } from "jsonwebtoken";
+import logger from "../util/logger";
 
 export default class AuthRepository implements IAuthRepository {
   constructor() {}
@@ -17,6 +18,9 @@ export default class AuthRepository implements IAuthRepository {
       });
 
       if (!userExists) {
+        logger.error(
+          `Error in /users/login: The requested user does not exist.`
+        );
         return createResponseModel(
           STATUS_CODE_ENUM.NOT_FOUND,
           "The requested user does not exist.",
@@ -27,6 +31,7 @@ export default class AuthRepository implements IAuthRepository {
       const isCorrect = await bcrypt.compare(password, userExists.password);
 
       if (!isCorrect) {
+        logger.error(`Error in /users/login: Incorrect username or password.`);
         return createResponseModel(
           STATUS_CODE_ENUM.UNAUTHORIZED,
           "Incorrect username or password.",
@@ -41,9 +46,10 @@ export default class AuthRepository implements IAuthRepository {
 
       const jwt_key = process.env.JWT_KEY;
       const jsonToken = sign({ user: user }, `${jwt_key}`, {
-        expiresIn: "5m",
+        expiresIn: "10m",
       });
 
+      logger.info("Endpoint /users/login: hit successfully");
       return createResponseModel(
         STATUS_CODE_ENUM.OK_STATUS,
         "Successful login.",
@@ -52,8 +58,7 @@ export default class AuthRepository implements IAuthRepository {
         jsonToken
       );
     } catch (error) {
-      //! TODO: ADD LOGGER
-      console.log(error);
+      logger.error(`Error in /users/login: ${error}`);
 
       return createResponseModel(
         STATUS_CODE_ENUM.INTERNAL_SERVER,
@@ -83,9 +88,10 @@ export default class AuthRepository implements IAuthRepository {
 
         const jwt_key = process.env.JWT_KEY;
         const jsonToken = sign({ user: user }, `${jwt_key}`, {
-          expiresIn: "5m",
+          expiresIn: "10m",
         });
 
+        logger.info("Endpoint /users/signup: hit successfully");
         return createResponseModel(
           STATUS_CODE_ENUM.OK_STATUS,
           "Successful registration.",
@@ -100,14 +106,14 @@ export default class AuthRepository implements IAuthRepository {
         message: "User already exists",
       };
 
+      logger.error(`Error in /users/signup: User already exists.`);
       return createResponseModel(
         STATUS_CODE_ENUM.RESOURCE_EXISTS,
         "User already exists",
         "Conflict"
       );
     } catch (error) {
-      //! TODO: ADD LOGGER
-      console.log(error);
+      logger.error(`Error in /users/signup: ${error}`);
 
       return createResponseModel(
         STATUS_CODE_ENUM.INTERNAL_SERVER,

@@ -3,7 +3,9 @@ import helmet from "helmet";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import { rateLimit } from "express-rate-limit";
+import cors from "cors";
 import express, { Request, Response, Application } from "express";
+import logger from "./util/logger";
 
 const authRouter = require("./routes/auth_routes");
 const tasksRouter = require("./routes/tasks_routes");
@@ -13,25 +15,28 @@ dotenv.config();
 
 const app: Application = express();
 
+// Enable CORS with specific options
+app.use(
+  cors({
+    origin: "*", // Replace with your frontend's origin
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  })
+);
+
 // parse application/json
 app.use(bodyParser.json());
-
-// Add middleware to enable CORS
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // Update with the allowed origin
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
 
 // Use Helmet!
 app.use(helmet());
 
 // Use Morgan!
-app.use(morgan("combined"));
+app.use(
+  morgan("combined", {
+    stream: { write: (message) => logger.info(message.trim()) },
+  })
+);
 
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,

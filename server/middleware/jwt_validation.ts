@@ -1,6 +1,7 @@
 import express from "express";
 import { verify } from "jsonwebtoken";
 import { STATUS_CODE_ENUM } from "../constants";
+import logger from "../util/logger";
 
 interface JwtPayload {
   userId: string;
@@ -21,6 +22,7 @@ export function checkToken(
     const jwt_key = process.env.JWT_KEY;
     verify(token, `${jwt_key}`, (err, decoded) => {
       if (err) {
+        logger.error(`Error in authentication validator: ${err}`);
         return res.status(STATUS_CODE_ENUM.UNAUTHORIZED).json({
           code: STATUS_CODE_ENUM.UNAUTHORIZED,
           error: "Invalid Token",
@@ -38,6 +40,7 @@ export function checkToken(
       }
     });
   } else {
+    logger.error(`Error in authentication validator: No token was provided`);
     return res.status(STATUS_CODE_ENUM.UNAUTHORIZED).json({
       code: STATUS_CODE_ENUM.UNAUTHORIZED,
       error: "Unauthorized",

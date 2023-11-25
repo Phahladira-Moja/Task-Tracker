@@ -1,7 +1,4 @@
-import { cn } from "@/lib/utils";
 import { useUserContext } from "../providers/AuthContext";
-
-import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import {
@@ -66,13 +63,7 @@ const Header = () => {
           <DropdownMenuContent className="mr-8 w-5">
             {isAuthenticated ? (
               <>
-                <Button
-                  variant="default"
-                  size="sm"
-                  className={cn("btn", "w-full mb-2")}
-                >
-                  Create Task
-                </Button>
+                <TaskModal isCreating />
                 <ConfirmModal isLoggingOut />
               </>
             ) : (

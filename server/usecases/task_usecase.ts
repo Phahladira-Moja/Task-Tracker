@@ -2,6 +2,7 @@ import { STATUS_CODE_ENUM } from "../constants";
 import { CreateTask } from "../models/Task";
 import ITaskRepository from "../repository/task_repository_interface";
 import createResponseModel from "../util/create_response_model";
+import logger from "../util/logger";
 
 export function makeCreateTaskUseCase(
   taskRepo: ITaskRepository,
@@ -18,7 +19,10 @@ export function makeCreateTaskUseCase(
     const isValid = validateTask(title, description, priority);
 
     if (!isValidId) {
-      //! TODO: LOG
+      logger.error(
+        `Error in POST /tasks/:id: Validation Error - The user ID passed in is invalid.`
+      );
+
       return createResponseModel(
         STATUS_CODE_ENUM.BAD_REQUEST,
         "The user ID passed in is invalid.",
@@ -27,7 +31,10 @@ export function makeCreateTaskUseCase(
     }
 
     if (!isValid) {
-      //! TODO: LOG
+      logger.error(
+        `Error in POST /tasks/:id: Validation Error - The parameters passed are invalid. Either the title, description or priority level.`
+      );
+
       return createResponseModel(
         STATUS_CODE_ENUM.BAD_REQUEST,
         "The parameters passed are invalid. Either the title, description or priority level.",
@@ -60,7 +67,10 @@ export function makeUpdateTaskUseCase(
     const isValid = validateTask(title, description, priority);
 
     if (!isValidId) {
-      //! TODO: LOG
+      logger.error(
+        `Error in PATCH /tasks/:id: Validation Error - The user ID passed in is invalid.`
+      );
+
       return createResponseModel(
         STATUS_CODE_ENUM.BAD_REQUEST,
         "The user ID passed in is invalid.",
@@ -69,7 +79,10 @@ export function makeUpdateTaskUseCase(
     }
 
     if (!isValid) {
-      //! TODO: LOG
+      logger.error(
+        `Error in PATCH /tasks/:id: Validation Error - The parameters passed are invalid. Either the title, description or priority level.`
+      );
+
       return createResponseModel(
         STATUS_CODE_ENUM.BAD_REQUEST,
         "The parameters passed are invalid. Either the title, description or priority level.",
@@ -95,7 +108,10 @@ export function makeGetTasksUseCase(
     const isValidId = validateUserId(userId);
 
     if (!isValidId) {
-      //! TODO: LOG
+      logger.error(
+        `Error in GET /tasks: Validation Error - The user ID passed in is invalid.`
+      );
+
       return createResponseModel(
         STATUS_CODE_ENUM.BAD_REQUEST,
         "The user ID passed in is invalid.",
@@ -115,7 +131,10 @@ export function makeDeleteTasksUseCase(
     const isValidId = validateUserId(id);
 
     if (!isValidId) {
-      //! TODO: LOG
+      logger.error(
+        `Error in DELETE /tasks: Validation Error - The task ID passed in is invalid.`
+      );
+
       return createResponseModel(
         STATUS_CODE_ENUM.BAD_REQUEST,
         "The task ID passed in is invalid.",

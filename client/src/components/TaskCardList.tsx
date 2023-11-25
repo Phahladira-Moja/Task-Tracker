@@ -9,8 +9,6 @@ interface TaskCardListProps {
 const TaskCardList = ({ tasks }: TaskCardListProps) => {
   const { isAuthenticated } = useUserContext();
 
-  console.log(isAuthenticated);
-
   return (
     <div className="tasks_layout">
       {!isAuthenticated ? (

@@ -2,6 +2,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Priority } from "@/constants/Enums";
+import { useUserContext } from "../../providers/AuthContext";
 
 import {
   Dialog,
@@ -33,6 +34,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Textarea } from "../ui/textarea";
+import toast from "react-hot-toast";
 
 interface TaskModalProps {
   isCreating: boolean;
@@ -69,6 +71,8 @@ const TaskModal = ({
   description,
   priority,
 }: TaskModalProps) => {
+  const { token } = useUserContext();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -80,13 +84,32 @@ const TaskModal = ({
 
   const isLoading = form.formState.isSubmitting;
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      // isLogin ? await axios.post("/api/servers", values) : await axios.post("/api/servers", values);
-      console.log(values);
+      const config = {
+        method: isCreating ? "POST" : "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token ? token : "No Token"}`,
+        },
+        body: JSON.stringify({
+          ...values,
+        }),
+      };
+
+      const response = await fetch(
+        isCreating
+          ? "http://localhost:8000/api/v1/tasks"
+          : `http://localhost:8000/api/v1/tasks/${id}`,
+        config
+      );
+
+      const data = await response.json();
 
       form.reset();
       window.location.reload();
+      if (response.status === 200) toast.success(data.message);
+      else toast.error(data.message);
     } catch (error) {
       console.log(error);
     }

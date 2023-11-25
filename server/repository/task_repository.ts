@@ -4,6 +4,7 @@ import { ResponseModel } from "../models/ResponseModel";
 import { CreateTask, SafeTask } from "../models/Task";
 import createResponseModel from "../util/create_response_model";
 import ITaskRepository from "./task_repository_interface";
+import logger from "../util/logger";
 
 export default class TaskRepository implements ITaskRepository {
   async getTasks(id: string): Promise<ResponseModel> {
@@ -18,11 +19,13 @@ export default class TaskRepository implements ITaskRepository {
       });
 
       const safeTasks: SafeTask[] = tasks.map((task) => ({
-        ...task,
-        createdAt: task.createdAt.toISOString(),
-        updatedAt: task.updatedAt.toISOString(),
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        priority: task.priority,
       }));
 
+      logger.info("Endpoint GET /tasks hit successfully");
       return createResponseModel(
         STATUS_CODE_ENUM.OK_STATUS,
         "Successfully retrieved the list of tasks.",
@@ -30,12 +33,10 @@ export default class TaskRepository implements ITaskRepository {
         safeTasks
       );
     } catch (error) {
-      //! TODO: ADD LOGGER
-      console.log(error);
-
+      logger.error(`Error in GET /tasks: ${error}`);
       return createResponseModel(
         STATUS_CODE_ENUM.INTERNAL_SERVER,
-        "An unexpected error occurred while trying to login. Please try again.",
+        "An unexpected error occurred while trying to retrieve tasks. Please try again.",
         "Internal Server Error"
       );
     }
@@ -56,18 +57,18 @@ export default class TaskRepository implements ITaskRepository {
         },
       });
 
+      logger.info("Endpoint POST /tasks hit successfully");
       return createResponseModel(
         STATUS_CODE_ENUM.OK_STATUS,
         "Task created successfully.",
         ""
       );
     } catch (error) {
-      //! TODO: ADD LOGGER
-      console.log(error);
+      logger.error(`Error in POST /tasks: ${error}`);
 
       return createResponseModel(
         STATUS_CODE_ENUM.INTERNAL_SERVER,
-        "An unexpected error occurred while trying to login. Please try again.",
+        "An unexpected error occurred while trying to retrieve tasks. Please try again.",
         "Internal Server Error"
       );
     }
@@ -86,18 +87,18 @@ export default class TaskRepository implements ITaskRepository {
         },
       });
 
+      logger.info("Endpoint PATCH /tasks/:id hit successfully");
       return createResponseModel(
         STATUS_CODE_ENUM.OK_STATUS,
         "Task updated successfully.",
         ""
       );
     } catch (error) {
-      //! TODO: ADD LOGGER
-      console.log(error);
+      logger.error(`Error in PATCH /tasks/:id: ${error}`);
 
       return createResponseModel(
         STATUS_CODE_ENUM.INTERNAL_SERVER,
-        "An unexpected error occurred while trying to login. Please try again.",
+        "An unexpected error occurred while trying to retrieve tasks. Please try again.",
         "Internal Server Error"
       );
     }
@@ -111,18 +112,18 @@ export default class TaskRepository implements ITaskRepository {
         },
       });
 
+      logger.info("Endpoint DELETE /tasks/:id hit successfully");
       return createResponseModel(
         STATUS_CODE_ENUM.OK_STATUS,
         "Task deleted successfully.",
         ""
       );
     } catch (error) {
-      //! TODO: ADD LOGGER
-      console.log(error);
+      logger.error(`Error in DELETE /tasks/:id: ${error}`);
 
       return createResponseModel(
         STATUS_CODE_ENUM.INTERNAL_SERVER,
-        "An unexpected error occurred while trying to login. Please try again.",
+        "An unexpected error occurred while trying to retrieve tasks. Please try again.",
         "Internal Server Error"
       );
     }

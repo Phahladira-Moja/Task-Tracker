@@ -1,69 +1,63 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import TaskCardList from "./TaskCardList";
 import { ITask } from "@/lib/Models";
 import { useUserContext } from "../providers/AuthContext";
 
-import axios from "axios";
-
 const Feed = () => {
   const { token, loading, setIsAuthenticated } = useUserContext();
-  // const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [tasks, setTasks] = useState<ITask[]>([]);
+  const [filteredTasks, setFilteredTasks] = useState<ITask[]>([]);
 
-  // const debounce = (func: unknown, delay: number) => {
-  //   let timer: unknown;
-  //   return function (...args: unknown[]) {
-  //     clearTimeout(timer);
-  //     timer = setTimeout(() => func(...args), delay);
-  //   };
-  // };
-
-  // const handleSearch = async (value: string) => {
-  //   try {
-  //     console.log(value);
-  //     //   const response = await fetch("/api/prompt/search", {
-  //     //     method: "POST",
-  //     //     body: JSON.stringify({
-  //     //       searchText: value,
-  //     //     }),
-  //     //   });
-  //     //   const data = await response.json();
-  //     //   setPosts(data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const delayedSearch = debounce(handleSearch, 1500);
-
-  // const handleSearchChange = (e) => {
-  //   setSearchText(e.currentTarget.value);
-  //   delayedSearch(e.currentTarget.value);
-  // };
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchText(event.target.value);
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         // setSearchText("");
         const config = {
-          headers: { Authorization: `Bearer ${token}` },
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token ? token : "No Token"}`,
+          },
         };
 
-        const response = await axios.get(
+        const response = await fetch(
           "http://localhost:8000/api/v1/tasks",
           config
         );
+        const data = await response.json();
 
-        console.log(response);
+        setIsAuthenticated(true);
 
-        // setPosts(data)
-      } catch (error) {
+        if (data.code === 401) {
+          setIsAuthenticated(false);
+        } else {
+          setTasks(data.body);
+        }
+      } catch (error: unknown) {
         console.log(error);
+        setIsAuthenticated(false);
       }
     };
 
-    fetchPosts();
-  }, []);
+    if (token) {
+      fetchPosts();
+    }
+  }, [token]);
+
+  useEffect(() => {
+    setFilteredTasks(
+      tasks.filter(
+        (task) =>
+          task.title.toLowerCase().includes(searchText.toLowerCase()) ||
+          task.description.toLowerCase().includes(searchText.toLowerCase())
+      )
+    );
+  }, [searchText]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -71,18 +65,18 @@ const Feed = () => {
 
   return (
     <section className="feed">
-      {/* <form className="relative w-full flex-center">
+      <form className="relative w-full flex-center">
         <input
           type="text"
           placeholder="Search for tasks"
           value={searchText}
-          onChange={handleSearchChange}
+          onChange={handleSearch}
           required
           className="search_input peer"
         />
-      </form> */}
+      </form>
 
-      <TaskCardList tasks={tasks} />
+      <TaskCardList tasks={searchText === "" ? tasks : filteredTasks} />
     </section>
   );
 };

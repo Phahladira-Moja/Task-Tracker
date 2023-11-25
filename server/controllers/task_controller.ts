@@ -9,10 +9,10 @@ export function makeCreateTask({ createTaskUseCase }: any) {
       "Content-Type": "application/json",
     };
 
-    const { userId, title, description, priority } = req.body;
+    const { user, title, description, priority } = req.body;
 
     const result = await createTaskUseCase(
-      userId,
+      user.id,
       title,
       description,
       priority
